@@ -15,6 +15,7 @@ se puede deducir de este servidor.
 Sin estado persistente, stdlib pura. systemd: synthora-mcp.service (puerto 8790).
 """
 import json
+import os
 import re
 import threading
 import time
@@ -329,6 +330,7 @@ class H(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     refresh_catalog(force=True)
-    print("synthora-mcp en :8790,", len(_cache["tools"]), "tools de",
+    print("synthora-mcp en :" + os.environ.get("SYNTHORA_MCP_PORT", "8790") + ",", len(_cache["tools"]), "tools de",
           _cache["entries"], "entradas del catalogo")
-    ThreadingHTTPServer(("0.0.0.0", 8790), H).serve_forever()
+    ThreadingHTTPServer((os.environ.get("SYNTHORA_MCP_HOST", "0.0.0.0"),
+                         int(os.environ.get("SYNTHORA_MCP_PORT", "8790"))), H).serve_forever()
